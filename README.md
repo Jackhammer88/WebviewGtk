@@ -102,7 +102,7 @@ This project is licensed under the GNU General Public License v3.0 (GPL-3.0).
 
 You are free to use, modify, and distribute this software — but any distributed binaries or derived works must also be open-sourced under the same license.
 
-**TL;DR**
+**TL;DR** 
 
 If you use this in your own project and distribute it — you must also share your source code under GPL-3.0.
 
