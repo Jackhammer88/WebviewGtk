@@ -1,4 +1,4 @@
-namespace WebviewGtk;
+namespace WebviewGtk.Models;
 
 public record WebViewConfig
 {
@@ -57,4 +57,6 @@ public record WebViewConfig
     /// Разрешённые адреса. Работает только при StrictMode == true.
     /// </summary>
     public IList<Uri> AllowedUrls { get; init; } = [];
+
+    public WindowStartupState WindowStartupState { get; set; }
 }

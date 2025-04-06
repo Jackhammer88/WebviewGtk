@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using WebviewGtk.Constants;
+using WebviewGtk.Models;
 
 namespace WebviewGtk.Interop;
 
@@ -75,6 +76,23 @@ internal static partial class Gtk
     
         [LibraryImport(Libraries.Gtk, EntryPoint = "gtk_window_set_title", StringMarshalling = StringMarshalling.Utf8)]
         internal static partial void SetTitle(IntPtr window, string title);
+        
+        
+        [LibraryImport(Libraries.Gtk, EntryPoint = "gtk_window_fullscreen")]
+        internal static partial void Fullscreen(IntPtr window);
+        
+        [LibraryImport(Libraries.Gtk, EntryPoint = "gtk_window_unfullscreen")]
+        internal static partial void UnFullscreen(IntPtr window);
+        
+        [LibraryImport(Libraries.Gtk, EntryPoint = "gtk_window_maximize")]
+        internal static partial void Maximize(IntPtr window);
+        [LibraryImport(Libraries.Gtk, EntryPoint = "gtk_window_unmaximize")]
+        internal static partial void UnMaximize(IntPtr window);
+        [LibraryImport(Libraries.Gtk, EntryPoint = "gtk_window_iconify")]
+        internal static partial void Iconify(IntPtr window);
+        [LibraryImport(Libraries.Gtk, EntryPoint = "gtk_window_deiconify")]
+        internal static partial void DeIconify(IntPtr window);
+        
         
         [LibraryImport(Libraries.Gtk, EntryPoint = "gtk_window_set_position")]
         internal static partial void SetPosition(IntPtr window, WindowPosition position);

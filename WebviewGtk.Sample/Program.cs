@@ -1,5 +1,6 @@
 ﻿
 using WebviewGtk;
+using WebviewGtk.Models;
 
 CancellationTokenSource cts = new();
 

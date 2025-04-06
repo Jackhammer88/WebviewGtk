@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using WebviewGtk.Interop;
+using WebviewGtk.Models;
 using GBoolean = WebviewGtk.Interop.GObject.GBoolean;
 
 namespace WebviewGtk;
@@ -148,6 +149,7 @@ public static partial class WebkitGtkWrapper
         Gtk.Window.SetPosition(_window, _config.WindowPosition);
         Gtk.Widget.ShowAll(_window);
         
+        // Регистрация метода отмены.
         token.Register(() =>
         {
             Console.WriteLine("Token canceled, shutting down GTK...");
@@ -157,6 +159,8 @@ public static partial class WebkitGtkWrapper
                 return false;
             }, IntPtr.Zero);
         });
+        
+        SetWindowInitialState(_window, _config.WindowStartupState);
         
         Gtk.Main();
         FreeHandles();
@@ -337,6 +341,7 @@ public static partial class WebkitGtkWrapper
         Gtk.Window.SetPosition(_window, _config.WindowPosition);
         Gtk.Widget.ShowAll(_window);
 
+        // Регистрация метода отмены.
         token.Register(() =>
         {
             Console.WriteLine("Token canceled, shutting down GTK...");
@@ -346,9 +351,52 @@ public static partial class WebkitGtkWrapper
                 return false;
             }, IntPtr.Zero);
         });
+
+        SetWindowInitialState(_window, config.WindowStartupState);
         
         Gtk.Main();
         FreeHandles();
+    }
+    
+    private static void SetWindowInitialState(
+        IntPtr window, 
+        WindowStartupState state)
+    {
+        if (state == WindowStartupState.Normal) return;
+        
+        WindowStateContext stateInfo = new(window, state);
+        GCHandle handle = GCHandle.Alloc(stateInfo);
+        
+        GLib.IdleAdd(static state =>
+        {
+            var h = (GCHandle)state;
+            if (h.Target is null)
+            {
+                h.Free();
+                return false;
+            }
+            
+            var context = (WindowStateContext)h.Target;
+            var win = context.Window;
+            
+            switch (context.State)
+            {
+                case WindowStartupState.Minimized:
+                    Gtk.Window.Iconify(win);
+                    break;
+                case WindowStartupState.Maximized:
+                    Gtk.Window.Maximize(win);
+                    break;
+                case WindowStartupState.FullScreen:
+                    Gtk.Window.Fullscreen(win);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
+            }
+
+            h.Free();
+            return false;
+        }, GCHandle.ToIntPtr(handle));
     }
 
     private static void FreeHandles()

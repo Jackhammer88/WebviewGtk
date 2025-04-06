@@ -1,4 +1,4 @@
-namespace WebviewGtk;
+namespace WebviewGtk.Models;
 
 public enum WebKitLoadEvent
 {
