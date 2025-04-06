@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>WebviewGtk</id>
+        <version>0.1.0</version>
+        <title>A library for rendering PDF files to PNG images.</title>
+        <authors>Aleksey Morkovin</authors>
+        <owners>Aleksey Morkovin</owners>
+        <license type="file">license\LICENSE.txt</license>
+        <projectUrl>https://github.com/Jackhammer88/WebviewGtk</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <dependencies>
+            <group targetFramework="net8.0">
+            </group>
+            <group targetFramework="net9.0">
+            </group>
+        </dependencies>
+        <description>
+            A lightweight .NET wrapper around WebKitGTK, providing a browser UI component for desktop Linux apps.
+
+            Features:
+            - Splash screen overlay during page loading
+            - JavaScript to C# bridge via postMessage
+            - Strict mode to prevent external navigation
+            - Context menu disabling for kiosk-style apps
+            - Developer tools support (DebugMode)
+            - Optional blocking of text selection
+            - Safe GTK shutdown with CancellationToken
+
+            Requires the following system packages:
+            - libgtk-3-dev
+            - libwebkit2gtk-4.0-dev
+            - libjavascriptcoregtk-4.1-dev
+            - libgdk-pixbuf2.0-dev
+            - libglib2.0-dev
+        </description>
+        <releaseNotes/>
+        <copyright>Copyright 2025 Aleksey Morkovin</copyright>
+        <tags>gtk linux webkit browser native webview webkitgtk interop</tags>
+        <readme>docs\README.md</readme>
+        <icon>images\128x128.png</icon>
+    </metadata>
+    <files>
+        <file src="license/LICENSE.txt" target="license\"/>
+        <file src="docs/README.md" target="docs\"/>
+        <file src="assets/128x128.png" target="images\" />
+
+        <file src="bin/Release/net8.0/linux-x64/WebviewGtk.dll" target="lib/net8.0/"/>
+        <file src="bin/Release/net8.0/linux-x64/WebviewGtk.pdb" target="lib/net8.0/"/>
+        <file src="bin/Release/net9.0/linux-x64/WebviewGtk.dll" target="lib/net9.0/"/>
+        <file src="bin/Release/net9.0/linux-x64/WebviewGtk.pdb" target="lib/net9.0/"/>
+    </files>
+</package>

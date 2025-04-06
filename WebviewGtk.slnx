@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="WebviewGtk.Sample\WebviewGtk.Sample.csproj" Type="Classic C#" />
+  <Project Path="WebviewGtk\WebviewGtk.csproj" Type="Classic C#" />
+</Solution>
