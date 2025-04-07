@@ -183,7 +183,7 @@ public static partial class WebkitGtkWrapper
     public static void RunWebkitWithHandler(
         WebViewConfig config,
         Action<WebKitLoadEvent, string?> loadChangedCallback,
-        Func<string, string> commandHandler,
+        Func<string, Task<string>> commandHandler,
         CancellationToken token)
     {
         if (!GtkWrapper.Initialized.Value)
@@ -318,15 +318,18 @@ public static partial class WebkitGtkWrapper
             int size = (int)JavascriptCoreGtk.JSStringGetMaximumUTF8CStringSize(jsStr);
             IntPtr buffer = Marshal.AllocHGlobal(size);
             JavascriptCoreGtk.JSStringGetUTF8CString(jsStr, buffer, (IntPtr)size);
-            string commandRequest = Marshal.PtrToStringUTF8(buffer)!;
-            Marshal.FreeHGlobal(buffer);
-            JavascriptCoreGtk.JSStringRelease(jsStr);
 
-            string commandResult = commandHandler(commandRequest);
-            WebKitGtk.Javascript.RunJavaScript(_webView,
-                $"window.__backendCallback?.({commandResult});",
-                IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+            Task.Run(async () =>
+            {
+                string commandRequest = Marshal.PtrToStringUTF8(buffer)!;
+                Marshal.FreeHGlobal(buffer);
+                JavascriptCoreGtk.JSStringRelease(jsStr);
+
+                string commandResult = await commandHandler(commandRequest);
+                SendCommandResult(commandResult);
+            });
         };
+        
         // Предотвращаем сборку GC
         _jsCallbackHandle = GCHandle.Alloc(_onScriptMessageReceivedHandler);
 
@@ -357,7 +360,30 @@ public static partial class WebkitGtkWrapper
         Gtk.Main();
         FreeHandles();
     }
-    
+
+    private static void SendCommandResult(string commandResult)
+    {
+        GCHandle commandResultHandle = GCHandle.Alloc(commandResult);
+
+        GLib.IdleAdd(static data =>
+        {
+            var h = (GCHandle)data;
+            if (h.Target is null)
+            {
+                h.Free();
+                return false;
+            }
+            
+            string context = (string)h.Target;
+            WebKitGtk.Javascript.RunJavaScript(_webView,
+                $"window.__backendCallback?.({context});",
+                IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+                    
+            h.Free();
+            return false;
+        }, GCHandle.ToIntPtr(commandResultHandle));
+    }
+
     private static void SetWindowInitialState(
         IntPtr window, 
         WindowStartupState state)

@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>WebviewGtk</id>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
         <title>A library for rendering PDF files to PNG images.</title>
         <authors>Aleksey Morkovin</authors>
         <owners>Aleksey Morkovin</owners>
